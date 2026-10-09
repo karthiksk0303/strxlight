@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +8,7 @@
   <title>STARLIGHT | Secure Access Portal</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <div class="stars" aria-hidden="true"></div>
 
@@ -15,8 +17,10 @@
       <span class="brand-icon">✦</span>
       STARLIGHT<span class="brand-dot">.</span>
     </a>
+
     <span class="nav-status">
-      <span class="status-dot"></span> SYSTEM ONLINE
+      <span class="status-dot"></span>
+      SYSTEM ONLINE
     </span>
   </nav>
 
@@ -39,10 +43,12 @@
           <span class="coordinate-label">NETWORK</span>
           <strong>STX-07</strong>
         </div>
+
         <div>
           <span class="coordinate-label">CLEARANCE</span>
           <strong>RESTRICTED</strong>
         </div>
+
         <div>
           <span class="coordinate-label">ENCRYPTION</span>
           <strong>ACTIVE</strong>
@@ -58,12 +64,14 @@
 
       <p class="card-kicker">IDENTITY VERIFICATION</p>
       <h2>Welcome back.</h2>
+
       <p class="card-description">
         Enter your credentials to continue.
       </p>
 
       <form id="loginForm">
         <label for="username">OPERATOR ID</label>
+
         <input
           id="username"
           name="username"
@@ -87,7 +95,12 @@
           required
         >
 
-        <p class="error-message" id="errorMessage" role="alert"></p>
+        <p
+          class="error-message"
+          id="errorMessage"
+          role="alert"
+          aria-live="polite"
+        ></p>
 
         <button type="submit" class="login-button">
           <span>AUTHENTICATE</span>
@@ -95,7 +108,9 @@
         </button>
       </form>
 
-      <div class="divider"><span>SECURE CONNECTION</span></div>
+      <div class="divider">
+        <span>SECURE CONNECTION</span>
+      </div>
 
       <div class="card-footer">
         <span class="footer-dot"></span>
@@ -105,21 +120,34 @@
 
     <section class="admin-card hidden" id="adminCard">
       <div class="admin-symbol">✦</div>
+
       <p class="card-kicker">AUTHORIZATION COMPLETE</p>
       <h2>Welcome, Operator.</h2>
+
       <p class="hero-text">
         The restricted Starlight archive is now accessible.
       </p>
 
       <div class="flag-box">
         <span class="coordinate-label">CLASSIFIED FLAG</span>
-        <code id="flag">ROOT@KNU11{STRXX_L1GHtt_P4Y4LuG4}</code>
-        <button type="button" id="copyFlag" class="login-button">
+
+        <!-- The flag is populated from the API after successful login. -->
+        <code id="flag"></code>
+
+        <button
+          type="button"
+          id="copyFlag"
+          class="login-button"
+        >
           COPY FLAG ↗
         </button>
       </div>
 
-      <button type="button" id="logoutButton" class="logout-button">
+      <button
+        type="button"
+        id="logoutButton"
+        class="logout-button"
+      >
         TERMINATE SESSION
       </button>
     </section>
