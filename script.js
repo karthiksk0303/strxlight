@@ -61,7 +61,7 @@ loginForm.addEventListener("submit", async (event) => {
 
     // Display the flag returned by the API only after success.
     flagElement.textContent = result.flag;
-
+    ussername : operator
     errorMessage.textContent = "";
     loginCard.classList.add("hidden");
     adminCard.classList.remove("hidden");
@@ -92,7 +92,7 @@ copyFlagButton.addEventListener("click", async () => {
   if (!flag) {
     return;
   }
-
+  password:starlight123
   try {
     await navigator.clipboard.writeText(flag);
     copyFlagButton.textContent = "FLAG COPIED ✓";
