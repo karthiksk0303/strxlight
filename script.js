@@ -1,76 +1,104 @@
+
 /*
  * STARLIGHT CTF
- * Beginner challenge: Client-side authentication bypass
- *
- * INTENTIONALLY VULNERABLE.
- * Never use this authentication design for real accounts.
+ * Beginner web security challenge
+ * Authentication handled by the Vercel API.
  */
+
+"use strict";
 
 const loginForm = document.getElementById("loginForm");
 const loginCard = document.getElementById("loginCard");
 const adminCard = document.getElementById("adminCard");
 const errorMessage = document.getElementById("errorMessage");
 
-const challengeSession = {
-  authenticated: false,
-  role: "guest"
-};
+const usernameInput = document.getElementById("username");
+const passwordInput = document.getElementById("password");
+const flagElement = document.getElementById("flag");
+const logoutButton = document.getElementById("logoutButton");
+const copyFlagButton = document.getElementById("copyFlag");
 
-// Intentionally insecure client-side access control.
-// CTF players can inspect and manipulate this logic.
-function authenticate(username, password) {
-  if (username === "operator" && password === "starlight123") {
-    challengeSession.authenticated = true;
-    challengeSession.role = "admin";
-    return true;
-  }
-
-  return false;
-}
-
-function openAdminPanel() {
-  // Intended vulnerability: authorization is decided by client JS.
-  if (challengeSession.authenticated &&
-      challengeSession.role === "admin") {
-    loginCard.classList.add("hidden");
-    adminCard.classList.remove("hidden");
-  }
-}
-
-loginForm.addEventListener("submit", function (event) {
+loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value;
+  const username = usernameInput.value.trim();
+  const password = passwordInput.value;
 
-  errorMessage.textContent = "";
+  errorMessage.textContent = "VERIFYING ACCESS...";
+  errorMessage.classList.remove("success");
 
-  if (authenticate(username, password)) {
-    openAdminPanel();
-  } else {
+  const authenticateButton = loginForm.querySelector(
+    'button[type="submit"]'
+  );
+
+  authenticateButton.disabled = true;
+
+  try {
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        username,
+        password
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      errorMessage.textContent =
+        result.error || "ACCESS DENIED — Invalid credentials.";
+      return;
+    }
+
+    if (typeof result.flag !== "string" || !result.flag) {
+      errorMessage.textContent =
+        "SYSTEM ERROR — Flag unavailable.";
+      return;
+    }
+
+    // Display the flag returned by the API only after success.
+    flagElement.textContent = result.flag;
+
+    errorMessage.textContent = "";
+    loginCard.classList.add("hidden");
+    adminCard.classList.remove("hidden");
+  } catch (error) {
+    console.error("STARLIGHT authentication error:", error);
+
     errorMessage.textContent =
-      "ACCESS DENIED — Invalid operator credentials.";
+      "CONNECTION ERROR — Please try again.";
+  } finally {
+    authenticateButton.disabled = false;
   }
 });
 
-document.getElementById("logoutButton").addEventListener("click", () => {
-  challengeSession.authenticated = false;
-  challengeSession.role = "guest";
-
+logoutButton.addEventListener("click", () => {
   adminCard.classList.add("hidden");
   loginCard.classList.remove("hidden");
+
   loginForm.reset();
   errorMessage.textContent = "";
+  flagElement.textContent = "";
+
+  copyFlagButton.textContent = "COPY FLAG ↗";
 });
 
-document.getElementById("copyFlag").addEventListener("click", async () => {
-  const flag = document.getElementById("flag").textContent;
-  const button = document.getElementById("copyFlag");
+copyFlagButton.addEventListener("click", async () => {
+  const flag = flagElement.textContent;
+
+  if (!flag) {
+    return;
+  }
 
   try {
     await navigator.clipboard.writeText(flag);
-    button.textContent = "FLAG COPIED ✓";
-  } catch {
-    button.textContent = "COPY FAILED — SELECT THE FLAG";
+    copyFlagButton.textContent = "FLAG COPIED ✓";
+  } catch (error) {
+    console.error("Clipboard error:", error);
+    copyFlagButton.textContent =
+      "COPY FAILED — SELECT THE FLAG";
   }
 });
