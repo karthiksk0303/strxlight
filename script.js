@@ -1,51 +1,51 @@
 ```javascript
-/*
- * STARLIGHT CTF
- * Beginner Challenge: Hidden Credentials
- */
-
 "use strict";
 
-// ===============================
-// CENTER CLUE
-// ===============================
+// =====================================
+// STARLIGHT CTF — CENTER CLUE
+// =====================================
 const clue = document.createElement("div");
 
+clue.id = "starlight-clue";
+
 clue.innerHTML = `
-  <p style="font-size:18px;font-weight:bold;">
+  <div style="font-size:18px;font-weight:bold;margin-bottom:12px;">
     ✦ SYSTEM CLUE ✦
-  </p>
-  <p>Operator ID: <code>operator</code></p>
-  <p>Access Key: <code>starlight123</code></p>
+  </div>
+  <div style="margin:8px 0;">
+    Operator ID: <code>operator</code>
+  </div>
+  <div style="margin:8px 0;">
+    Access Key: <code>starlight123</code>
+  </div>
   <small>Use these clues to unlock STARLIGHT.</small>
 `;
 
 clue.style.cssText = `
   box-sizing: border-box;
   width: 100%;
-  max-width: 340px;
+  max-width: 100%;
   margin: 0 auto 24px;
-  padding: 18px;
+  padding: 18px 12px;
   text-align: center;
-  color: #ff3030;
-  background: #0a0a0a;
-  border: 1px solid #ff3030;
+  color: #dca0ff;
+  background: rgba(20, 12, 35, 0.95);
+  border: 1px solid #a56bff;
   border-radius: 10px;
-  box-shadow: 0 0 18px rgba(255, 0, 0, 0.2);
+  box-shadow: 0 0 18px rgba(165, 107, 255, 0.18);
   font-family: monospace;
-  line-height: 1.6;
+  line-height: 1.7;
 `;
 
-const clueCodes = clue.querySelectorAll("code");
-
-clueCodes.forEach((code) => {
-  code.style.color = "#ffffff";
-  code.style.fontWeight = "bold";
+clue.querySelectorAll("code").forEach((item) => {
+  item.style.color = "#ffffff";
+  item.style.fontWeight = "bold";
+  item.style.fontSize = "14px";
 });
 
-// ===============================
+// =====================================
 // PAGE ELEMENTS
-// ===============================
+// =====================================
 const loginForm = document.getElementById("loginForm");
 const loginCard = document.getElementById("loginCard");
 const adminCard = document.getElementById("adminCard");
@@ -56,30 +56,31 @@ const flagElement = document.getElementById("flag");
 const logoutButton = document.getElementById("logoutButton");
 const copyFlagButton = document.getElementById("copyFlag");
 
-// Display clue above the login form
+// Place clue inside login card, above the form.
 if (loginCard) {
   loginCard.prepend(clue);
+} else {
+  console.error("STARLIGHT: loginCard element not found.");
 }
 
-// ===============================
-// LOGIN / AUTHENTICATION
-// ===============================
+// =====================================
+// LOGIN
+// =====================================
 if (loginForm) {
   loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const username = usernameInput.value.trim();
     const password = passwordInput.value;
+    const submitButton = loginForm.querySelector(
+      'button[type="submit"]'
+    );
 
     errorMessage.textContent = "VERIFYING ACCESS...";
     errorMessage.classList.remove("success");
 
-    const authenticateButton = loginForm.querySelector(
-      'button[type="submit"]'
-    );
-
-    if (authenticateButton) {
-      authenticateButton.disabled = true;
+    if (submitButton) {
+      submitButton.disabled = true;
     }
 
     try {
@@ -89,8 +90,8 @@ if (loginForm) {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          username,
-          password
+          username: username,
+          password: password
         })
       });
 
@@ -112,41 +113,62 @@ if (loginForm) {
 
       loginCard.classList.add("hidden");
       adminCard.classList.remove("hidden");
+
     } catch (error) {
-      console.error("STARLIGHT authentication error:", error);
+      console.error("STARLIGHT login error:", error);
       errorMessage.textContent =
         "CONNECTION ERROR — Please try again.";
     } finally {
-      if (authenticateButton) {
-        authenticateButton.disabled = false;
+      if (submitButton) {
+        submitButton.disabled = false;
       }
+    }
+  });
+} else {
+  console.error("STARLIGHT: loginForm element not found.");
+}
+
+// =====================================
+// LOGOUT
+// =====================================
+if (logoutButton) {
+  logoutButton.addEventListener("click", () => {
+    if (adminCard) {
+      adminCard.classList.add("hidden");
+    }
+
+    if (loginCard) {
+      loginCard.classList.remove("hidden");
+    }
+
+    if (loginForm) {
+      loginForm.reset();
+    }
+
+    if (errorMessage) {
+      errorMessage.textContent = "";
+    }
+
+    if (flagElement) {
+      flagElement.textContent = "";
+    }
+
+    if (copyFlagButton) {
+      copyFlagButton.textContent = "COPY FLAG ↗";
     }
   });
 }
 
-// ===============================
-// LOGOUT
-// ===============================
-if (logoutButton) {
-  logoutButton.addEventListener("click", () => {
-    adminCard.classList.add("hidden");
-    loginCard.classList.remove("hidden");
-
-    loginForm.reset();
-    errorMessage.textContent = "";
-    flagElement.textContent = "";
-    copyFlagButton.textContent = "COPY FLAG ↗";
-  });
-}
-
-// ===============================
+// =====================================
 // COPY FLAG
-// ===============================
+// =====================================
 if (copyFlagButton) {
   copyFlagButton.addEventListener("click", async () => {
-    const flag = flagElement.textContent;
+    const flag = flagElement?.textContent;
 
-    if (!flag) return;
+    if (!flag) {
+      return;
+    }
 
     try {
       await navigator.clipboard.writeText(flag);
