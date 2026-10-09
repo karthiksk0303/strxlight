@@ -6,8 +6,8 @@ export default function handler(req, res) {
   const { username, password } = req.body || {};
 
   if (
-    username !== process.env.CTF_USERNAME ||
-    password !== process.env.CTF_PASSWORD
+   username !== process.env.operator
+password !== process.env.starlight123
   ) {
     return res.status(401).json({
       error: "ACCESS DENIED — Invalid credentials."
