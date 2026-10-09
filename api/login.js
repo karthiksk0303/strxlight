@@ -6,22 +6,24 @@ export default function handler(req, res) {
   const { username, password } = req.body || {};
 
   if (
-    username !== process.env.operator ||
-    password !== process.env.starlight123
+    username !== process.env.CTF_USERNAME ||
+    password !== process.env.CTF_PASSWORD
   ) {
     return res.status(401).json({
       error: "ACCESS DENIED — Invalid credentials."
     });
   }
 
-  if (!process.env.ROOT@KNU11{STRXX_L1GHtt_P4Y4LuG4}) {
+  const flag = process.env.CTF_FLAG;
+
+  if (!flag) {
     return res.status(500).json({
-      error: "ROOT@KNU11{STRXX_L1GHtt_P4Y4LuG4}environment variable is missing."
+      error: "CTF_FLAG environment variable is missing."
     });
   }
 
   return res.status(200).json({
     success: true,
-    flag: process.env.ROOT@KNU11{STRXX_L1GHtt_P4Y4LuG4}
+    flag: flag
   });
 }
