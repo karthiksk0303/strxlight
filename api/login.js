@@ -9,9 +9,9 @@ export default function handler(req, res) {
   try {
     const { username, password } = req.body || {};
 
-    const expectedUsername = process.env.CTF_USERNAME;
-    const expectedPassword = process.env.CTF_PASSWORD;
-    const flag = process.env.CTF_FLAG;
+    const expectedUsername = process.env.operator;
+    const expectedPassword = process.env.starlight123;
+    const flag = process.env.ROOT@KNU11{STRXX_L1GHtt_P4Y4LuG4};
 
     if (!expectedUsername || !expectedPassword || !flag) {
       console.error("STARLIGHT: Required environment variables are missing.");
